@@ -10,6 +10,8 @@ a static or instance class that can process an HTTP request.  Each
 routemap pattern must be unique.  If a duplicate routemap pattern is
 detected an exception will be thrown.
 
+### Syntax
+
 ```
     [routemap( "{route-pattern}", [http_methods] )]
 ```
