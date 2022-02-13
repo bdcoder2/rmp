@@ -18,34 +18,27 @@ detected an exception will be thrown.
 
 ### Parameters
 
-<dl>
-    <dt>route-pattern</dt>
-  <dd>Required. The <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0" target="_blank">route-pattern</a> 
-      defines an endpoint.  An endpoint is something that can be selected, by matching the URL and HTTP method(s) provided.  
-      See <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference" target="_blank">route template reference</a> for more information.
-      
-  </dd>
-  <dt>http_methods</dt>
-  <dd>
-      Optional.  Used to indicate the allowed HTTP methods for the given route-pattern.  
-      Valid HTTP method verbs are:
-      <ul>
-          <li>routemap.http_methods.CONNECT</li>
-          <li>routemap.http_methods.DELETE</li>
-          <li>routemap.http_methods.GET</li>
-          <li>routemap.http_methods.HEAD</li>
-          <li>routemap.http_methods.OPTIONS</li>
-          <li>routemap.http_methods.POST</li>
-          <li>routemap.http_methods.PUT</li>
-          <li>routemap.http_methods.TRACE</li>
-      </ul>
-      If no methods are provided, then the HTTP GET and POST methods are used by default.  
-      Multiple HTTP methods can be specified by using the logical OR operator (|) between
-      method verbs, for example, to allow the GET or DELETE methods:
-      
-      routemap.http_methods.GET | routemap_http_methods.DELETE  
-  </dd>
-</dl>
+#### route-pattern
+
+Required. The <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0" target="_blank">route-pattern</a> 
+defines an endpoint.  An endpoint is something that can be selected, by matching the URL and HTTP method(s) provided.  See <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference" target="_blank">route template reference</a> for more information.
+
+#### http_methods
+Optional.  Used to indicate the allowed HTTP methods for the given route-pattern.  Valid HTTP method verbs are:
+- routemap.http_methods.CONNECT
+- routemap.http_methods.DELETE
+- routemap.http_methods.GET
+- routemap.http_methods.HEAD
+- routemap.http_methods.OPTIONS
+- routemap.http_methods.POST
+- routemap.http_methods.PUT
+- routemap.http_methods.TRACE
+
+If no methods are provided, then the HTTP GET and POST methods are used by default.  Multiple HTTP methods can be specified by using the logical OR operator (|) between
+method verbs, for example, to allow the GET or DELETE methods:
+```   
+routemap.http_methods.GET | routemap_http_methods.DELETE
+```
 
 ### Examples
 
@@ -58,7 +51,7 @@ detected an exception will be thrown.
 - Match the URL **/do_delete** for HTTP DELETE requests only:
 
 ```
-   [routemap( "/do_delete", routemap.http_methods.GET )]
+   [routemap( "/do_delete", routemap.http_methods.DELETE )]
 ```
 
 - Match the URL **/do_something** for HTTP GET, POST and HEAD requests:
@@ -67,13 +60,13 @@ detected an exception will be thrown.
    [routemap( "/do_something", routemap.http_methods.GET | routemap_http_methods.POST | routemap.http_methods.HEAD )]
 ```
 
-- Matches the URLs such as **/product/** or **/product/123** for the HTTP GET and POST requests.  The {id:int?} segment, indicates an optional integer can be supplied after the /product/ segment:
+- Matches the URLs such as **/product/** or **/product/123** for HTTP GET and POST requests.  The **{id:int?}** segment, indicates an optional integer can be supplied after the /product/ segment:
 
 ```
    [routemap( "/product/{id:int?}/" )]
 ```
    
-- Matches the URLs such as **/widget/** or **/widget/val1/val2/val3** for HTTP GET requests. The {*queryvalues} segment, with the leading asterisk indicates that this is a wildcard parameter and thus it can accept any additional segments in it:
+- Matches the URLs such as **/widget/** or **/widget/val1/val2/val3** for HTTP GET requests. The __{*queryvalues}__ segment, with the leading asterisk indicates that this is a wildcard parameter that can accept any additional segments in it:
 
 ```
    [routemap( "/widget/{*queryvalues}", routemap.http_methods.GET )]
