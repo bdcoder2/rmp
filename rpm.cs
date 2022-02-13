@@ -167,12 +167,10 @@ namespace rmp
       to specify that GET and POST are supported use:
 
       routemap.http_methods.GET | routemap.http_methods.POST
-
-      ==================================================
       */
 
       // Public HTTP methods / verbs enumeration ...
-      
+
       [System.Flags]
       public enum http_methods : int
       {
