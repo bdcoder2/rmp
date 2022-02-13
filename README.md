@@ -3,9 +3,34 @@
 Illustrates defining routemaps WITHOUT the need of MVC or Razor pages
 for creating lightweight websites.
 
-A **[routemap]** attribute is placed above any method in a static or 
-instance class that can process an HTTP request.
+## The [routemap] Attribute
 
+One or more **[routemap]** attributes are placed above any method in 
+a static or instance class that can process an HTTP request.  Each
+routemap pattern must be unique.  If a duplicate routemap pattern is
+detected an exception will be thrown.
+
+```    
+[routemap( "{route-pattern}", [ http_methods ] )]
+```
+
+The **[route pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0)**
+is required.
+
+The **http_methods** is an enumeration of HTTP verbs used to specify the allowed HTTP methods.  By default a routemap will allow the HTTP 
+GET and POST methods if no methods are explicitly set.  Multiple HTTP methods can be specified.  Some examples of setting HTTP methods:
+    
+    ```    
+    // Handle HTTP GET requests only ...
+    [routemap( "/do_get", routemap.http_methods.GET )]
+    
+    // Handle HTTP DELETE requests only ...
+    [routemap( "/do_delete", routemap.http_methods.DELETE )]
+    
+     // Handle HTTP GET, POST and HEAD requests ...
+    [routemap( "/do_something", routemap.http_methods.GET | routemap_http_methods.POST | routemap.http_methods.HEAD )]
+    ```
+    
 ## USAGE
 
  1. Create an empty .Net website project and include
@@ -23,9 +48,6 @@ instance class that can process an HTTP request.
     two two methods "page1_render" and "page2_render", each
     of which handles HTTP requests.
     
-    A **[routemap]** attribute is placed above each method 
-    and includes the [route pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0) 
-    used to invoke each method:
     
     ```
     using Microsoft.AspNetCore.Http;
@@ -51,7 +73,7 @@ instance class that can process an HTTP request.
        }
 
 
-       [routemap( "/page1" ) ]
+       [routemap( "/" ) ]
        private async Task page1_render( HttpContext http_context )
        {
 
@@ -119,6 +141,6 @@ instance class that can process an HTTP request.
    defined will be mapped to the appropriate handler, for 
    example:
 
-   - /page1 => will invoke the my_pages.page1_render method
+   - / => will invoke the my_pages.page1_render method
 
    - /page2 => will invoke the my_pages.page2_render method
