@@ -58,7 +58,7 @@ detected an exception will be thrown.
 - Match the URL **/do_delete** for HTTP DELETE requests only:
 
 ```
-   [routemap( "/do_get", routemap.http_methods.GET )]
+   [routemap( "/do_delete", routemap.http_methods.GET )]
 ```
 
 - Match the URL **/do_something** for HTTP GET, POST and HEAD requests:
