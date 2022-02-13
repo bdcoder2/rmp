@@ -41,7 +41,7 @@ detected an exception will be thrown.
       </ul>
       If no methods are provided, then the HTTP GET and POST methods are used by default.  
       Multiple HTTP methods can be specified by using the logical OR operator (|) between
-      method verb, for example, to allow the GET or DELETE methods:
+      method verbs, for example, to allow the GET or DELETE methods:
       
       routemap.http_methods.GET | routemap_http_methods.DELETE  
   </dd>
