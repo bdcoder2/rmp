@@ -1,9 +1,9 @@
-# Routemap pages (rmp) for .Net websites WITHOUT MVC or Razor
+<h1>Routemap pages (rmp) for .Net websites WITHOUT MVC or Razor</h1>
 
 Illustrates defining routemaps for website page handlers
 WITHOUT the need of MVC or Razor pages.
 
-## The [routemap] Attribute
+<h2>The [routemap] attribute</h2>
 
 One or more **[routemap]** attributes are placed above any method in 
 a static or instance class that can process an HTTP request.  Each
@@ -14,37 +14,41 @@ detected an exception will be thrown.
 [routemap( "{route-pattern}", [ http_methods ] )]
 ```
 
-The **[route pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0)** is 
-required.
+<h3>Parameters</h3>
 
-The **http_methods** is optional and is used to indicate the allowed HTTP methods for the given route-pattern.  If no 
-methods are provided, then the HTTP GET and POST methods are used by default.  Multiple HTTP methods can be specified.
+<dl>
+    <dt>route-pattern</dt>
+  <dd>Required. The <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0" target="_blank">route-pattern</a> 
+      defines an endpoint.  An endpoint is something that can be selected, by matching the URL and HTTP method(s).  
+      See <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference" target="_blank">route template reference</a> for more information.  Examples of route-patterns:
+      
+  </dd>
+  <dt>http_methods</dt>
+  <dd>
+      Optional.  Used to indicate the allowed HTTP methods for the given route-pattern.  
+      Valid HTTP method verb are: CONNECT, DELETE, GET, HEAD, OPTIONS, POST, PUT and TRACE.      
+      If no methods are provided, then the HTTP GET and POST methods are used by default.  
+      Multiple HTTP methods can be specified.  Examples of HTTP methods for various routemaps:
+  </dd>
+</dl>
 
-Valid HTTP method verb are:
+<h3>Examples</h3>
 
-- CONNECT
-- DELETE
-- GET
-- HEAD
-- OPTIONS
-- POST
-- PUT
-- TRACE
+```    
 
-Some examples of setting HTTP methods for various routemaps:
+// Match the URL /do_get for HTTP GET requests only ...
+[routemap( "/do_get", routemap.http_methods.GET )]
     
-    ```    
-    // Handle HTTP GET requests only ...
-    [routemap( "/do_get", routemap.http_methods.GET )]
+// Match the URL /do_delete for HTTP DELETE requests only ...
+[routemap( "/do_delete", routemap.http_methods.DELETE )]
     
-    // Handle HTTP DELETE requests only ...
-    [routemap( "/do_delete", routemap.http_methods.DELETE )]
+// Match the URL /do_something for HTTP GET, POST and HEAD requests ...
+[routemap( "/do_something", routemap.http_methods.GET | routemap_http_methods.POST | routemap.http_methods.HEAD )]
     
-     // Handle HTTP GET, POST and HEAD requests ...
-    [routemap( "/do_something", routemap.http_methods.GET | routemap_http_methods.POST | routemap.http_methods.HEAD )]
-    ```
+ ```
+
     
-## USAGE
+<h2>USAGE</h2>
 
  1. Create an empty .Net website project and include
     the file rpm.cs from this repository in your project (or simply
