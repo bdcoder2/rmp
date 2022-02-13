@@ -34,23 +34,36 @@ detected an exception will be thrown.
 
 ### Examples
 
-- Match the URL /do_get for HTTP GET requests only
+- Match the URL **/do_get** for HTTP GET requests only:
         
 ```
    [routemap( "/do_get", routemap.http_methods.GET )]
 ```
         
-- Match the URL /do_delete for HTTP DELETE requests only
+- Match the URL **/do_delete** for HTTP DELETE requests only:
 
 ```
    [routemap( "/do_get", routemap.http_methods.GET )]
 ```
 
-- Match the URL /do_something for HTTP GET, POST and HEAD requests
+- Match the URL **/do_something** for HTTP GET, POST and HEAD requests:
 
 ```
    [routemap( "/do_something", routemap.http_methods.GET | routemap_http_methods.POST | routemap.http_methods.HEAD )]
 ```
+
+- Matches the URLs such as **/product/** or **/product/123** for the HTTP GET and POST requests.  The {id:int?} segment, indicates an optional integer can be supplied after the /product/ segment:
+
+```
+   [routemap( "/product/{id:int?}/" )]
+```
+   
+- Matches the URLs such as **/widget/** or **/widget/val1/val2/val3** for HTTP GET. The {*queryvalues} segment, with the leading asterisk indicates that this is a wildcard parameter and thus it can accept all sorts of additional segments in it:
+
+```
+   [routemap( "/widget/{*queryvalues}", routemap.http_methods.GET )]
+```  
+   
 
 ### Usage
 
