@@ -14,7 +14,8 @@ detected an exception will be thrown.
 [routemap( "{route-pattern}", [ http_methods ] )]
 ```
 
-A required **[route pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0)**.
+The **[route pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0)** is 
+required.
 
 The **http_methods** is optional and is used to indicate the allowed HTTP methods for the given route-pattern.  If no 
 methods are provided, then the HTTP GET and POST methods are used by default.  Multiple HTTP methods can be specified.
