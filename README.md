@@ -11,7 +11,7 @@ routemap pattern must be unique.  If a duplicate routemap pattern is
 detected an exception will be thrown.
 
 ```
-    [routemap( "{route-pattern}", [ http_methods ] )]
+    [routemap( "{route-pattern}", [http_methods] )]
 ```
 
 ### Parameters
@@ -20,7 +20,7 @@ detected an exception will be thrown.
     <dt>route-pattern</dt>
   <dd>Required. The <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0" target="_blank">route-pattern</a> 
       defines an endpoint.  An endpoint is something that can be selected, by matching the URL and HTTP method(s) provided.  
-      See <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference" target="_blank">route template reference</a> for more information.  Examples of route-patterns:
+      See <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference" target="_blank">route template reference</a> for more information.
       
   </dd>
   <dt>http_methods</dt>
