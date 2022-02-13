@@ -52,7 +52,7 @@ detected an exception will be thrown.
    [routemap( "/do_something", routemap.http_methods.GET | routemap_http_methods.POST | routemap.http_methods.HEAD )]
 ```
 
-## USAGE
+### Usage
 
 1. Create an empty .Net website project and include the file rpm.cs from this repository in your project (or simply
  clone this respository).
@@ -62,7 +62,7 @@ detected an exception will be thrown.
     ```
     using rmp;
     ```
-
+    
    For example, the class "my_pages" shown below contains two two methods "page1_render" and "page2_render", each
    of which handles HTTP requests.
 
