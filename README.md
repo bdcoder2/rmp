@@ -28,9 +28,22 @@ detected an exception will be thrown.
   <dt>http_methods</dt>
   <dd>
       Optional.  Used to indicate the allowed HTTP methods for the given route-pattern.  
-      Valid HTTP method verb are: CONNECT, DELETE, GET, HEAD, OPTIONS, POST, PUT and TRACE.      
+      Valid HTTP method verbs are:
+      <ul>
+          <li>routemap.http_methods.CONNECT</li>
+          <li>routemap.http_methods.DELETE</li>
+          <li>routemap.http_methods.GET</li>
+          <li>routemap.http_methods.HEAD</li>
+          <li>routemap.http_methods.OPTIONS</li>
+          <li>routemap.http_methods.POST</li>
+          <li>routemap.http_methods.PUT</li>
+          <li>routemap.http_methods.TRACE</li>
+      </ul>
       If no methods are provided, then the HTTP GET and POST methods are used by default.  
-      Multiple HTTP methods can be specified.  Examples of HTTP methods for various routemaps:
+      Multiple HTTP methods can be specified by using the logical OR operator (|) between
+      method verb, for example, to allow the GET or DELETE methods:
+      
+      routemap.http_methods.GET | routemap_http_methods.DELETE  
   </dd>
 </dl>
 
@@ -60,7 +73,7 @@ detected an exception will be thrown.
    [routemap( "/product/{id:int?}/" )]
 ```
    
-- Matches the URLs such as **/widget/** or **/widget/val1/val2/val3** for HTTP GET. The {*queryvalues} segment, with the leading asterisk indicates that this is a wildcard parameter and thus it can accept all sorts of additional segments in it:
+- Matches the URLs such as **/widget/** or **/widget/val1/val2/val3** for HTTP GET requests. The {*queryvalues} segment, with the leading asterisk indicates that this is a wildcard parameter and thus it can accept any additional segments in it:
 
 ```
    [routemap( "/widget/{*queryvalues}", routemap.http_methods.GET )]
