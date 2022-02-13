@@ -1,8 +1,10 @@
 # Routemap pages (rmp) for .Net websites WITHOUT MVC OR RAZOR
 
- A [routemap] attribute is placed above any method
- in a static or instance class that can process an 
- HTTP request.
+Illustrates defining routemaps WITHOUT the need of MVC or Razor pages
+for creating lightweight websites.
+
+A **[routemap]** attribute is placed above any method in a static or 
+instance class that can process an HTTP request.
 
 ## USAGE
 
