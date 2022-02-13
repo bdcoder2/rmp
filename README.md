@@ -20,8 +20,8 @@ detected an exception will be thrown.
 
 #### route-pattern
 
-Required. The <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0" target="_blank">route-pattern</a> 
-defines an endpoint.  An endpoint is something that can be selected, by matching the URL and HTTP method(s) provided.  See <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference" target="_blank">route template reference</a> for more information.
+Required. The [route-pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0) defines an endpoint.  An endpoint 
+is something that can be selected, by matching the URL and HTTP method(s) provided.  See [route template reference](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference) for more information.
 
 #### http_methods
 Optional.  Used to indicate the allowed HTTP methods for the given route-pattern.  Valid HTTP method verbs are:
