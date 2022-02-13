@@ -57,7 +57,7 @@ detected an exception will be thrown.
 1. Create an empty .Net website project and include the file rpm.cs from this repository in your project (or simply
  clone this respository).
  
-2. Include the following using statement in any file that uses the <b>[routemap]</b> attribute:
+2. Include the following using statement in any file that uses the **[routemap]** attribute:
 
     ```
     using rmp;
@@ -118,7 +118,7 @@ detected an exception will be thrown.
     }
    ```
 
-3. In the <b>Startup</b> class, modify the <b>ConfigureServices</b> and <b>Configure</b> methods to 
+3. In the **Startup** class, modify the **ConfigureServices** and **Configure** methods to 
    include the routemap pages service, as shown below:
 
     ```
