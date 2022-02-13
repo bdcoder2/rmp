@@ -1,6 +1,6 @@
 # Routemap pages (rmp) for .Net websites WITHOUT MVC or Razor
 
-Illustrates defining routemaps for creating website page handlers
+Illustrates defining routemaps for website page handlers
 WITHOUT the need of MVC or Razor pages.
 
 ## The [routemap] Attribute
