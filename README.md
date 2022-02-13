@@ -1,4 +1,4 @@
-# Routemap pages (rmp) for .Net websites WITHOUT MVC OR RAZOR
+# Routemap pages (rmp) for .Net websites WITHOUT MVC or Razor
 
 Illustrates defining routemaps WITHOUT the need of MVC or Razor pages
 for creating lightweight websites.
