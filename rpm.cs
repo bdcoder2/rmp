@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
 
 /*
 ==================================================
@@ -671,6 +672,8 @@ namespace rmp
       private static System.Collections.Generic.List<MethodInfo> methods_with_routemap_attributes()
       {
 
+         ParameterInfo[] parameter_info_array;
+
          System.Reflection.MethodInfo[] method_info_array;
 
          System.Type[] assembly_types_array;
@@ -707,6 +710,17 @@ namespace rmp
 
                   if ( System.Attribute.GetCustomAttributes( method_info, typeof( routemap ) ).Length > 0 )
                   {
+
+                     // Make sure the methods first parameter is of type HttpContext ...
+
+                     parameter_info_array = method_info.GetParameters();
+
+                     if ( parameter_info_array.Length == 0 || parameter_info_array[ 0 ].ParameterType != typeof( HttpContext ) )
+                     {
+
+                        throw new InvalidOperationException( $@"Invalid method: {method_info.DeclaringType.FullName}.{method_info.Name} first parameter must be of type: HttpContext" );
+
+                     }
 
                      method_info_list.Add( method_info );
 
