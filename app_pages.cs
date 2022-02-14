@@ -127,7 +127,6 @@ namespace mywebsite
       public async Task routemaps_page( HttpContext http_context )
       {
 
-         String routemap_file;
          String s;
 
          StringBuilder sb;
@@ -177,9 +176,10 @@ namespace mywebsite
          sb.AppendLine( "</ol>" );
 
 
-         // DEBUGGING - Log all routemaps to a text file (change path below as needed) ...
-
-         routemap_file = @"D:\temp\routmap_pages.txt";
+         // DEBUGGING - Log all routemaps to a text file
+         // Uncomment and change path below as needed ...
+         /*
+         String routemap_file = @"D:\temp\routmap_pages.txt";
 
          try
          {
@@ -195,6 +195,7 @@ namespace mywebsite
             sb.AppendLine( $@"<p>{ex}</p>" );
 
          }
+         */
 
 
          // Send response ...
