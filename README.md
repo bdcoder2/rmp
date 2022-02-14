@@ -149,28 +149,33 @@ routemap.http_methods.GET | routemap_http_methods.DELETE
     using Microsoft.Extensions.Hosting;
     using rmp;
 
-    public void ConfigureServices( IServiceCollection services )
+    public class Startup
     {
+   
+      public void ConfigureServices( IServiceCollection services )
+      {
 
-       // Add routemap pages service ...
+         // Add routemap pages service ...
 
-       services.add_rmp();
+         services.add_rmp();
 
-    }
+      }
     
     
-    public void Configure( IApplicationBuilder app )
-    {
+      public void Configure( IApplicationBuilder app )
+      {
 
-       // Use Routing (required) ...
+         // Use Routing (required) ...
 
-       app.UseRouting();
+         app.UseRouting();
 
 
-       // Use routemap pages ...
+         // Use routemap pages ...
 
-       app.use_rmp();
+         app.use_rmp();
 
+      }
+      
     }
 
     ```
