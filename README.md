@@ -75,7 +75,7 @@ routemap.http_methods.GET | routemap_http_methods.DELETE
 
 ### Usage
 
-1. Create an empty .Net website project and include the file rpm.cs from this repository in your project (or simply
+1. Create an empty .Net website project and include the file **rpm.cs** from this repository in your project (or simply
  clone this respository).
  
 2. Include the following using statement in any file that uses the **[routemap]** attribute:
