@@ -1045,7 +1045,7 @@ namespace rmp
          if ( routemap_endpoints is null )
          {
          
-            throw new Exception( "Did you forget to call Services.add_routemaps()?" );
+            throw new Exception( "Did you forget to call Services.add_rmp()?" );
          
          }
          
