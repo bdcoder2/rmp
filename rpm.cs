@@ -305,7 +305,7 @@ namespace rmp
       /*
       --------------------------------------------------
 
-      Returns the file path for this routemap.
+      Returns the source file path for this routemap.
 
       --------------------------------------------------
       */
@@ -472,7 +472,7 @@ namespace rmp
       --------------------------------------------------
 
       Returns a string containing the method name that 
-      is invoked to handle for a routemap pattern / path ...
+      is invoked to handle a routemap pattern / path ...
 
       --------------------------------------------------
       */
@@ -548,7 +548,7 @@ namespace rmp
       /*
       --------------------------------------------------
 
-      Writes all routemaps to a the given output file.
+      Writes all routemaps to the given output file.
       Used for debugging.
 
       --------------------------------------------------
@@ -715,10 +715,10 @@ namespace rmp
 
                      parameter_info_array = method_info.GetParameters();
 
-                     if ( parameter_info_array.Length == 0 || parameter_info_array[ 0 ].ParameterType != typeof( HttpContext ) )
+                     if ( parameter_info_array.Length == 0 || parameter_info_array[ 0 ].ParameterType != typeof( Microsoft.AspNetCore.Http.HttpContext ) )
                      {
 
-                        throw new InvalidOperationException( $@"Invalid method: {method_info.DeclaringType.FullName}.{method_info.Name} first parameter must be of type: HttpContext" );
+                        throw new InvalidOperationException( $@"Invalid method: {method_info.DeclaringType.FullName}.{method_info.Name} first parameter must be of type: Microsoft.AspNetCore.Http.HttpContext" );
 
                      }
 
