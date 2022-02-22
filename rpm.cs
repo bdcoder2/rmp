@@ -1017,12 +1017,26 @@ namespace rmp
       public static void add_rmp( this IServiceCollection services )
       {
 
+         if ( services is null )
+         {
+
+            throw new ArgumentNullException( nameof( services ) );
+
+         }
+         
          services.AddSingleton<routemap_endpoints>();
 
       }
 
       public static IApplicationBuilder use_rmp( this IApplicationBuilder builder )
       {
+
+         if ( builder is null )
+         {
+
+            throw new ArgumentNullException( nameof( builder ) );
+
+         }
 
          return builder.UseEndpoints( map_endpoints );
 
