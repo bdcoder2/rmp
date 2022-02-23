@@ -61,7 +61,7 @@ using Microsoft.AspNetCore.Http;
 
           m_page1_render_count++;
 
-          await http_context.Response.WriteAsync( $@"Page 1, render count: {m_page1_render_count} );
+          await http_context.Response.WriteAsync( $@"Page 1, render count: {m_page1_render_count}" );
 
           return;
 
@@ -73,7 +73,7 @@ using Microsoft.AspNetCore.Http;
 
           m_page2_render_count++;
 
-          await http_context.Response.WriteAsync( $@"Page 2, render count: {m_page2_render_count} );
+          await http_context.Response.WriteAsync( $@"Page 2, render count: {m_page2_render_count}" );
 
           return;
 
