@@ -646,14 +646,25 @@ namespace rmp
       /*
       --------------------------------------------------
 
-      Given a MethodInfo object, return a string that is
+      Given a MethodInfo object, return a string that 
       contains the declaring type and method name, that
       is, the fully qualified method name ...
+
+      NOTE: This will throw an exception if the given
+            MethodInfo objects DeclaringType property
+            is null.
 
       --------------------------------------------------
       */
       private static String qualified_method_name( MethodInfo method_info )
       {
+
+         if ( method_info.DeclaringType is null )
+         {
+
+            throw new ArgumentException( $"{nameof( method_info )} does not have a declaring type." );
+
+         }
 
          return method_info.DeclaringType.FullName + "." + method_info.Name;
 
@@ -671,6 +682,8 @@ namespace rmp
       */
       private static System.Collections.Generic.List<MethodInfo> methods_with_routemap_attributes()
       {
+
+         String method_name;
 
          ParameterInfo[] parameter_info_array;
 
@@ -711,18 +724,26 @@ namespace rmp
                   if ( System.Attribute.GetCustomAttributes( method_info, typeof( routemap ) ).Length > 0 )
                   {
 
-                     // Make sure the methods first parameter is of type HttpContext ...
+                     // Get qualified method name for error reporting ...
+
+                     method_name = qualified_method_name( method_info );
+
+                     // The method must have at least one parameter and the first must be of type HttpContext ...
 
                      parameter_info_array = method_info.GetParameters();
 
-                     if ( parameter_info_array.Length == 0 || parameter_info_array[ 0 ].ParameterType != typeof( Microsoft.AspNetCore.Http.HttpContext ) )
+                     if ( parameter_info_array.Length >= 1 && parameter_info_array[ 0 ].ParameterType == typeof( Microsoft.AspNetCore.Http.HttpContext ) )
                      {
 
-                        throw new InvalidOperationException( $@"Invalid method: {method_info.DeclaringType.FullName}.{method_info.Name} first parameter must be of type: Microsoft.AspNetCore.Http.HttpContext" );
+                        method_info_list.Add( method_info );
 
                      }
+                     else
+                     {
 
-                     method_info_list.Add( method_info );
+                        throw new InvalidOperationException( $@"Method: {method_name}, the first parameter must be of type: Microsoft.AspNetCore.Http.HttpContext" );
+
+                     }
 
                   }
 
@@ -749,22 +770,9 @@ namespace rmp
       private static System.Collections.Generic.Dictionary<String, Microsoft.AspNetCore.Http.RequestDelegate> route_handlers_create( System.Collections.Generic.List<MethodInfo> method_info_list )
       {
 
-         object class_object;
-
          String method_name;
 
          System.Collections.Generic.Dictionary<String, Microsoft.AspNetCore.Http.RequestDelegate> method_name_dict;
-
-         /*
-         The instance list is used to keep track of instances created when creating
-         Microsoft.AspNetCore.Http.RequestDelegate objects for methods in non-static
-         classes.  We need to keep track of the instances so that only a single instance
-         will be created in the case where an instance has multiple methods that have
-         [routemap] attributes.  If we did not do this, a new instance would be created
-         each time!
-         */
-
-         System.Collections.Generic.List<object> instance_list;
 
          Microsoft.AspNetCore.Http.RequestDelegate route_handler;
 
@@ -781,8 +789,6 @@ namespace rmp
 
          // Init ...
 
-         instance_list = new System.Collections.Generic.List<object>();
-
          method_name_dict = new System.Collections.Generic.Dictionary<String, Microsoft.AspNetCore.Http.RequestDelegate>();
 
 
@@ -795,86 +801,16 @@ namespace rmp
 
             method_name = qualified_method_name( method_info );
 
-            route_handler = null;
-
-
-            // If a static method, create a delegate that can process an HTTP request ...
-
-            if ( method_info.IsStatic )
+            try
             {
 
-               try
-               {
-
-                  route_handler = method_info.CreateDelegate<Microsoft.AspNetCore.Http.RequestDelegate>();
-
-               }
-               catch ( Exception ex )
-               {
-
-                  throw new Exception( $"* Unable to create delegate for [routemap] static method: {method_name}, {ex}" );
-
-               }
+               route_handler = RequestDelegateFactory.Create( method_info ).RequestDelegate;
 
             }
-            else
+            catch ( Exception ex )
             {
 
-               /*
-               For a non-static method, we first check if an instance of the class
-               that contains the method exists in our list.  If so, then we use 
-               the instance to create the delegate ...
-               */
-
-               try
-               {
-
-                  class_object = null;
-
-                  foreach ( object instance in instance_list )
-                  {
-
-                     if ( instance.GetType() == method_info.DeclaringType )
-                     {
-
-                        class_object = instance;
-
-                        break;
-
-                     }
-
-                  }
-
-                  /*
-                  If a class object (instance) was not found above, it means we need to 
-                  create an instance of the class that contains the given method, so 
-                  attempt to do so ...
-                  */
-
-                  if ( class_object is null )
-                  {
-
-                     // Create an instance of the class; this will trigger the class constructor ...
-
-                     class_object = System.Activator.CreateInstance( method_info.DeclaringType );
-
-                     // Add the class instance in our list ...
-
-                     instance_list.Add( class_object );
-
-                  }
-
-                  // Create the route handler ...
-
-                  route_handler = method_info.CreateDelegate<Microsoft.AspNetCore.Http.RequestDelegate>( class_object );
-
-               }
-               catch ( Exception ex )
-               {
-
-                  throw new Exception( $"* Unable to create delegate for [routemap] method: {method_name}, {ex}" );
-
-               }
+               throw new Exception( $"* Unable to create delegate for [routemap] static method: {method_name}, {ex}" );
 
             }
 
