@@ -12,7 +12,7 @@ detected an exception will be thrown.
 ### Syntax
 
 ```
-    [routemap( "{route-pattern}", [http_methods] )]
+    [routemap( "{route-pattern}", [http_methods], [order] )]
 ```
 
 ### Parameters
