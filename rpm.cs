@@ -190,13 +190,17 @@ namespace rmp
 
       // Private fields ...
 
+      // The route pattern ...
+
+      readonly private String m_route_pattern;
+
       // The HTTP method verbs this route will allow ...
 
       readonly private http_methods m_http_methods;
 
-      // The route pattern ...
+      // The route order.  Lower numeric value of order have higher priority ...
 
-      readonly private String m_route_pattern;
+      readonly private Int32 m_order;
 
       // The source file path for this routemap ...
 
@@ -214,8 +218,8 @@ namespace rmp
       /*
       --------------------------------------------------
 
-      Constructor with route pattern and the HTTP methods
-      this routemap supports.
+      Constructor with route pattern, HTTP methods, and
+      order.
 
       PARAMETERS:
 
@@ -228,8 +232,13 @@ namespace rmp
         will support.  By default, if none are specified, 
         then the GET and POST methods are supported.
 
+      order
+      - The order for this routemap.  May be any value
+        greater than or equal to zero.  Default is zero.
+        A lower value will have higher priority.
 
-      EXAMPLE:
+
+      EXAMPLE 1:
 
       The following "my_pages" class has a method called
       "page1_render".  To map the path "/page1/" to the 
@@ -238,7 +247,7 @@ namespace rmp
          public class my_pages
          {
             ...
-            [routemap("/page1")]
+            [routemap( "/page1" )]
             public static async Task page1_render( HttpContext context )
             { 
 
@@ -251,10 +260,41 @@ namespace rmp
       When a GET or POST request is made using the "/page1" path, the
       "page1_render" method will be invoked to return "Hello World!".
 
+      
+      EXAMPLE 2:
+      
+      The following "my_api" class has two methods with the same 
+      routemap pattern, i.e.: /api/v1/test
+      The "page1_render" method will be executed because the order
+      is set to 1, which would take priority:
+
+         public class my_api
+         {
+            ...
+            [routemap( "/api/v1/test", order: 1 )]
+            public static async Task page1_render( HttpContext context )
+            { 
+
+               // This routemap would take priority as order is lower
+
+            }
+
+            [routemap( "/api/v1/test", order: 2 )]
+            public static async Task page2_render( HttpContext context )
+            { 
+
+               ...
+
+            }
+
+         }
+
+
       --------------------------------------------------
       */
       public routemap( String route_pattern,
                        http_methods allowed_http_methods = http_methods.GET | http_methods.POST,
+                       Int32 order = 0,
                        [CallerFilePath] string file_path = "",
                        [CallerMemberName] string member_name = "",
                        [CallerLineNumber] int line_number = 0 )
@@ -272,7 +312,20 @@ namespace rmp
          m_route_pattern = route_pattern;
 
          m_http_methods = allowed_http_methods;
-         
+
+         if ( order >= 0 )
+         {
+
+            m_order = order;
+
+         }
+         else
+         {
+
+            m_order = 0;
+
+         }
+
          m_file_path = file_path;
 
          m_member_name = member_name;
@@ -296,66 +349,6 @@ namespace rmp
          {
 
             return m_route_pattern;
-
-         }
-
-      }
-
-
-      /*
-      --------------------------------------------------
-
-      Returns the source file path for this routemap.
-
-      --------------------------------------------------
-      */
-      public virtual String file_path
-      {
-
-         get
-         {
-
-            return m_file_path;
-
-         }
-
-      }
-
-
-      /*
-      --------------------------------------------------
-
-      Returns the member name (handler) for this routemap.
-
-      --------------------------------------------------
-      */
-      public virtual String member_name
-      {
-
-         get
-         {
-
-            return m_member_name;
-
-         }
-
-      }
-
-
-      /*
-      --------------------------------------------------
-
-      Returns the source line number for this routemap.
-
-      --------------------------------------------------
-      */
-      public virtual int line_number
-      {
-
-         get
-         {
-
-            return m_line_number;
 
          }
 
@@ -423,6 +416,88 @@ namespace rmp
             }
 
             return method_list;
+
+         }
+
+      }
+
+
+      /*
+      --------------------------------------------------
+
+      Returns the order for the routemap.  Endpoints 
+      with a lower numeric value of order have higher 
+      priority.
+
+      --------------------------------------------------
+      */
+      public virtual Int32 order
+      {
+
+         get
+         {
+
+            return m_order;
+
+         }
+
+      }
+
+
+      /*
+      --------------------------------------------------
+
+      Returns the source file path for this routemap.
+
+      --------------------------------------------------
+      */
+      public virtual String file_path
+      {
+
+         get
+         {
+
+            return m_file_path;
+
+         }
+
+      }
+
+
+      /*
+      --------------------------------------------------
+
+      Returns the member name (handler) for this routemap.
+
+      --------------------------------------------------
+      */
+      public virtual String member_name
+      {
+
+         get
+         {
+
+            return m_member_name;
+
+         }
+
+      }
+
+
+      /*
+      --------------------------------------------------
+
+      Returns the source line number for this routemap.
+
+      --------------------------------------------------
+      */
+      public virtual int line_number
+      {
+
+         get
+         {
+
+            return m_line_number;
 
          }
 
@@ -549,7 +624,7 @@ namespace rmp
       --------------------------------------------------
 
       Writes all routemaps to the given output file.
-      Used for debugging.
+      Useful when debugging.
 
       --------------------------------------------------
       */
@@ -579,27 +654,29 @@ namespace rmp
 
          sb.AppendLine( $@"Number of [routemap] endpoints defined: {m_routemap_dict.Count}" );
 
-         foreach ( String route_pattern in m_routemap_dict.Keys )
+         foreach ( String route_pattern_key in m_routemap_dict.Keys )
          {
 
-            routemap_data = m_routemap_dict[ route_pattern ];
+            routemap_data = m_routemap_dict[ route_pattern_key ];
 
             routemap_attribute = routemap_data.routemap_attribute;
 
             sb.AppendLine( "" );
 
-            sb.AppendLine( $"Route pattern: {route_pattern}" );
+            sb.AppendLine( $@"Route pattern: {routemap_attribute.route_pattern}" );
 
-            foreach ( String http_method_verb in routemap_data.routemap_attribute.allowed_http_method_list )
+            foreach ( String http_method_verb in routemap_attribute.allowed_http_method_list )
             {
 
-               sb.AppendLine( $"- HTTP method: {http_method_verb}" );
+               sb.AppendLine( $@"- HTTP method: {http_method_verb}" );
 
             }
 
-            sb.AppendLine( $"- Mapped to method: {routemap_data.method_name}" );
+            sb.AppendLine( $@"- Order: {routemap_attribute.order}" );
 
-            sb.AppendLine( $"- Source file: {routemap_attribute.file_path}, line number: {routemap_attribute.line_number}" );
+            sb.AppendLine( $@"- Mapped to method: {routemap_data.method_name}" );
+
+            sb.AppendLine( $@"- Source file: {routemap_attribute.file_path}, line number: {routemap_attribute.line_number}" );
 
          }
 
@@ -822,7 +899,7 @@ namespace rmp
 
             It works, BUT for methods of a non-static class, it will create a new instance
             of the class EACH TIME it is called (calls Activator.CreateInstance internally).
-            Using the MethdoInfo.CreateDelegate method works and allows us to create a single 
+            Using the MethodInfo.CreateDelegate method works and allows us to create a single 
             instance instead.
             */
 
@@ -915,7 +992,25 @@ namespace rmp
          return method_name_dict;
 
       }
-      
+
+
+      /*
+      --------------------------------------------------
+
+      Given a routemap attribute object, returns a string
+      that contains the routemap order and method name,
+      which we use as a key into our routemap dictionary
+      (m_routemap_dict).
+
+      --------------------------------------------------
+      */
+      private static String routemap_pattern_key( routemap routemap_attribute )
+      {
+
+         return $@"{routemap_attribute.order}_{routemap_attribute.route_pattern}";
+
+      }
+
 
       /*
       --------------------------------------------------
@@ -929,6 +1024,7 @@ namespace rmp
       public void add( Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints )
       {
 
+         String key;
          String method_name;
 
          System.Attribute[] attribute_array;
@@ -976,7 +1072,7 @@ namespace rmp
 
             method_name = qualified_method_name( method_info );
 
-            
+
             // Get the route handler (RequestDelegate) for this method ...
 
             route_handler = method_name_dict[ method_name ];
@@ -991,7 +1087,9 @@ namespace rmp
 
                // Internal consistency check for duplicate route patterns ...
 
-               if ( m_routemap_dict.ContainsKey( attribute.route_pattern ) )
+               key = routemap_pattern_key( attribute );
+
+               if ( m_routemap_dict.ContainsKey( key ) )
                {
 
                   throw new Exception( $"Method {method_name} contains a duplicate route pattern: {attribute.route_pattern} in {attribute.file_path} on line {attribute.line_number}" );
@@ -999,16 +1097,30 @@ namespace rmp
                }
 
 
-               // Map the route pattern, HTTP methods and route handler ...
+               /*
+               Map the route pattern, HTTP methods and route handler ...
+               If the order is greater than zero, configure the EndpointBuilder 
+               via a convention, see: https://github.com/dotnet/aspnetcore/issues/39241
+               */
 
-               endpoints.MapMethods( attribute.route_pattern, attribute.allowed_http_method_list, route_handler );
+               if ( attribute.order > 0 )
+               {
 
+                  endpoints.MapMethods( attribute.route_pattern, attribute.allowed_http_method_list, route_handler ).Add( builder => ( ( RouteEndpointBuilder )builder ).Order = attribute.order );
+
+               }
+               else
+
+               {
+                  endpoints.MapMethods( attribute.route_pattern, attribute.allowed_http_method_list, route_handler );
+
+               }
 
                // Save the method name and routemap data in our dictionary ...
 
                routemap_data = new routemap_data( method_name, attribute );
 
-               m_routemap_dict.Add( attribute.route_pattern, routemap_data );
+               m_routemap_dict.Add( key, routemap_data );
 
             }
 
@@ -1056,6 +1168,22 @@ namespace rmp
 
       }
 
+      // .Net 6.0+ ...
+      public static void use_rmp( this WebApplication app )
+      {
+
+         if ( app is null )
+         {
+
+            throw new ArgumentNullException( nameof( app ) );
+
+         }
+
+         map_endpoints( app );
+
+      }
+
+      // .Net 5 or 6 ...
       public static IApplicationBuilder use_rmp( this IApplicationBuilder builder )
       {
 
@@ -1083,18 +1211,21 @@ namespace rmp
          // Get routemap_endpoints instance ...
 
          routemap_endpoints routemap_endpoints = endpoints.ServiceProvider.GetService<routemap_endpoints>();
-         
+
          if ( routemap_endpoints is null )
          {
-         
+
             throw new Exception( "Did you forget to call Services.add_rmp()?" );
-         
+
          }
-         
+
          // Add all [routemap] endpoints ...
 
          routemap_endpoints.add( endpoints );
-      
+
+         // DEBUGGING ...
+         routemap_endpoints.log_to_file( @"D:\temp\website2_endpoints.txt" );
+
       }
 
    }

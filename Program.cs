@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-
 namespace mywebsite
 {
    public class Program
@@ -38,6 +37,7 @@ namespace mywebsite
                   webBuilder.UseStartup<Startup>();
               
                } );
+
    }
 
 }

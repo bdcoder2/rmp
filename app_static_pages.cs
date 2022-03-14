@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 using rmp;
 using System.Web;
 
-/*
-==================================================
-
- Illustrates using a static class to render website
- pages.
-
- Note the [routemap] attributes above those methods
- used to render pages.  See rpm.cs for details.
-
-==================================================
-*/
-
 namespace mywebsite
 {
+
+   /*
+   ==================================================
+
+    Illustrates using a static class to render website
+    pages.
+
+    Note the [routemap] attributes above those methods
+    used to render pages.  See rpm.cs for details.
+
+   ==================================================
+   */
    public static class app_static_pages
    {
 

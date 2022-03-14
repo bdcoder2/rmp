@@ -39,6 +39,10 @@ method verbs, for example, to allow the GET or DELETE methods:
 ```   
 routemap.http_methods.GET | routemap_http_methods.DELETE
 ```
+#### order
+Optional. The order for this routemap.  May be any value greater than or equal to zero.  Default is zero.
+A lower value will have higher priority.
+
 
 ### Examples
 
@@ -71,7 +75,15 @@ routemap.http_methods.GET | routemap_http_methods.DELETE
 ```
    [routemap( "/widget/{*queryvalues}", routemap.http_methods.GET )]
 ```  
-   
+
+- Matches the URL **/api/v1/test** for HTTP GET and POST requests.  The **api_test_v2** method will be excuted because the order has a lower value than the **api_test** method.
+```
+   [routemap( "/api/v1/test", order: 1 )]
+   public static async Task api_test_v2( HttpContext context ) { ... }
+
+   [routemap( "/api/v1/test", order: 2 )]
+   public static async Task api_test( HttpContext context ) { ... }
+```  
 
 ### Usage
 

@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 using rmp;
 using System.Web;
 
-/*
-==================================================
-
- Illustrates using a instance class to render 
- website pages.
-
- Note the [routemap] attributes above those methods
- used to render pages.  See rpm.cs for details.
-
-==================================================
-*/
-
 namespace mywebsite
 {
+
+   /*
+   ==================================================
+
+    Illustrates using a instance class to render 
+    website pages.
+
+    Note the [routemap] attributes above those methods
+    used to render pages.  See rpm.cs for details.
+
+   ==================================================
+   */
    public class app_pages
    {
 
@@ -259,9 +259,10 @@ namespace mywebsite
 
             s = String.Join( ", ", kvp.Value.routemap_attribute.allowed_http_method_list );
 
-            sb.AppendLine( $@"<li>Routemap pattern: {kvp.Key}
+            sb.AppendLine( $@"<li>Routemap pattern: {kvp.Value.routemap_attribute.route_pattern}
                            <ul>
                            <li>Allowed HTTP methods: {s}</li>
+                           <li>Order: {kvp.Value.routemap_attribute.order}</li>
                            <li>Mapped to method: {kvp.Value.method_name}</li>
                            <li>Source file: {kvp.Value.routemap_attribute.file_path}, line: {kvp.Value.routemap_attribute.line_number}</li>
                            </ul>
