@@ -998,7 +998,7 @@ namespace rmp
       --------------------------------------------------
 
       Given a routemap attribute object, returns a string
-      that contains the routemap order and method name,
+      that contains the routemap order and route pattern,
       which we use as a key into our routemap dictionary
       (m_routemap_dict).
 
