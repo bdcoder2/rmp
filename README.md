@@ -37,7 +37,7 @@ Optional.  Used to indicate the allowed HTTP methods for the given route-pattern
 If no methods are provided, then the HTTP GET and POST methods are used by default.  Multiple HTTP methods can be specified by using the logical OR operator (|) between
 method verbs, for example, to allow the GET or DELETE methods:
 ```   
-routemap.http_methods.GET | routemap_http_methods.DELETE
+routemap.http_methods.GET | routemap.http_methods.DELETE
 ```
 #### order
 Optional. The order for this routemap.  May be any value greater than or equal to zero.  Default is zero.
@@ -61,7 +61,7 @@ A lower value will have higher priority.
 - Match the URL **/do_something** for HTTP GET, POST and HEAD requests:
 
 ```
-   [routemap( "/do_something", routemap.http_methods.GET | routemap_http_methods.POST | routemap.http_methods.HEAD )]
+   [routemap( "/do_something", routemap.http_methods.GET | routemap.http_methods.POST | routemap.http_methods.HEAD )]
 ```
 
 - Matches the URLs such as **/product/** or **/product/123** for HTTP GET and POST requests.  The **{id:int?}** segment, indicates an optional integer can be supplied after the /product/ segment:
