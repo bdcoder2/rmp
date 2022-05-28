@@ -1223,8 +1223,9 @@ namespace rmp
 
          routemap_endpoints.add( endpoints );
 
-         // DEBUGGING ...
-         routemap_endpoints.log_to_file( @"D:\temp\website2_endpoints.txt" );
+
+         // DEBUGGING - log endpoints to a file ...
+         //routemap_endpoints.log_to_file( @"D:\temp\website_endpoints.txt" );
 
       }
 

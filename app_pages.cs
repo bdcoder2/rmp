@@ -140,7 +140,7 @@ namespace mywebsite
       /*
       --------------------------------------------------
 
-      Rentder a product page for a given product ID ...
+      Render a product page for a given product ID ...
 
       --------------------------------------------------
       */
