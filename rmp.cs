@@ -1110,8 +1110,8 @@ namespace rmp
 
                }
                else
-
                {
+
                   endpoints.MapMethods( attribute.route_pattern, attribute.allowed_http_method_list, route_handler );
 
                }
