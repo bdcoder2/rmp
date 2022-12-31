@@ -1147,7 +1147,7 @@ namespace rmp
 
       // other ...
 
-      app.use_website_routemaps();
+      app.use_rmp();
 
    }
 
