@@ -1,11 +1,11 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Reflection;
-using System.Text;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System;
 
 /*
 ==================================================
@@ -173,7 +173,7 @@ namespace rmp
       // Public HTTP methods / verbs enumeration ...
 
       [System.Flags]
-      public enum http_methods : int
+      public enum http_methods : Int32
       {
 
          GET = 1,
