@@ -183,10 +183,11 @@ namespace rmp
          DELETE = 16,
          CONNECT = 32,
          OPTIONS = 64,
-         TRACE = 128
+         TRACE = 128,
+         PATCH = 256
 
       }
-      
+
 
       // Private fields ...
 
@@ -302,12 +303,7 @@ namespace rmp
 
          // A route pattern is required ...
 
-         if ( string.IsNullOrEmpty( route_pattern ) )
-         {
-
-            throw new ArgumentNullException( nameof( route_pattern ) );
-
-         }
+         ArgumentNullException.ThrowIfNullOrWhiteSpace( route_pattern );
 
          m_route_pattern = route_pattern;
 
@@ -866,12 +862,7 @@ namespace rmp
 
          // method_info_list is required ...
 
-         if ( method_info_list is null )
-         {
-
-            throw new ArgumentNullException( nameof( method_info_list ) );
-
-         }
+         ArgumentNullException.ThrowIfNull( method_info_list );
 
 
          // Init ...
@@ -1040,12 +1031,7 @@ namespace rmp
 
          // endpoints interface is required ...
 
-         if ( endpoints is null )
-         {
-
-            throw new ArgumentNullException( nameof( endpoints ) );
-
-         }
+         ArgumentNullException.ThrowIfNull( endpoints );
 
 
          // Find all methods with [routemap] attributes ...
@@ -1157,13 +1143,8 @@ namespace rmp
       public static void add_rmp( this IServiceCollection services )
       {
 
-         if ( services is null )
-         {
+         ArgumentNullException.ThrowIfNull( services );
 
-            throw new ArgumentNullException( nameof( services ) );
-
-         }
-         
          services.AddSingleton<routemap_endpoints>();
 
       }
@@ -1172,12 +1153,7 @@ namespace rmp
       public static void use_rmp( this WebApplication app )
       {
 
-         if ( app is null )
-         {
-
-            throw new ArgumentNullException( nameof( app ) );
-
-         }
+         ArgumentNullException.ThrowIfNull( app );
 
          map_endpoints( app );
 
@@ -1187,26 +1163,14 @@ namespace rmp
       public static IApplicationBuilder use_rmp( this IApplicationBuilder builder )
       {
 
-         if ( builder is null )
-         {
-
-            throw new ArgumentNullException( nameof( builder ) );
-
-         }
-
-         return builder.UseEndpoints( map_endpoints );
+         return  builder is null  ? throw new ArgumentNullException( nameof( builder ) ) :  builder.UseEndpoints( map_endpoints );
 
       }
 
       private static void map_endpoints( this IEndpointRouteBuilder endpoints )
       {
 
-         if ( endpoints is null )
-         {
-
-            throw new ArgumentNullException( nameof( endpoints ) );
-
-         }
+         ArgumentNullException.ThrowIfNull( endpoints );
 
          // Get routemap_endpoints instance ...
 
@@ -1224,7 +1188,7 @@ namespace rmp
          routemap_endpoints.add( endpoints );
 
 
-         // DEBUGGING - log endpoints to a file ...
+         // DEBUGGING - log all routemap endpoints to a file ...
          //routemap_endpoints.log_to_file( @"D:\temp\website_endpoints.txt" );
 
       }
