@@ -33,6 +33,7 @@ Optional.  Used to indicate the allowed HTTP methods for the given route-pattern
 - routemap.http_methods.POST
 - routemap.http_methods.PUT
 - routemap.http_methods.TRACE
+- routemap.http_methods.PATCH
 
 If no methods are provided, then the HTTP GET and POST methods are used by default.  Multiple HTTP methods can be specified by using the logical OR operator (|) between
 method verbs, for example, to allow the GET or DELETE methods:
