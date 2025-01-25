@@ -242,6 +242,6 @@ A lower value will have higher priority.
 
 3. Build and launch the website.  The [routemap] patterns defined will be mapped to the appropriate handler, for 
    example:
-   - / => will invoke the my_pages.page1_render method</li>
-   - /page1 => will invoke the my_pages.page1 render method</li>_
-   - /page2 => will invoke the my_pages.page2_render method</li>
+   - / => will invoke the my_pages.page1_render method
+   - /page1 => will invoke the my_pages.page1 render method
+   - /page2 => will invoke the my_pages.page2_render method
