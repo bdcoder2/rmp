@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System;
+using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 /*
 ==================================================
@@ -21,36 +23,24 @@ using System;
 
  USAGE
 
- 1. Include this file (rpm.cs) in your project.
-
- 2. Include the following using statement in any 
-    file that defines a class to handle HTTP 
-    requests:
-
-    using rmp;
-
- 3. Define a class with the methods that will
-    handle HTTP requests.  In the example below, 
-    the class "my_pages" contains two methods 
-    "page1_render" and "page2_render".  A [routemap] 
-    attribute is placed above each method and 
-    includes the route pattern used to invoke the
-    method:
+ 1. Include the following using statement in any 
+    file that defines a class that handles HTTP 
+    requests, for example:
 
     using rmp;
 
     public class my_pages
     {
       
-       private int m_page1_render_count;
-       private int m_page2_render_count;
+       private Int32 m_page1_render_count;
+       private Int32 m_page2_render_count;
 
        public my_pages()
        {
 
-          int m_page1_render_count = 0;
+          m_page1_render_count = 0;
 
-          int m_page2_render_count = 0;
+          m_page2_render_count = 0;
 
        }
 
@@ -82,40 +72,104 @@ using System;
     }
 
 
- 4. Within the ConfigureServices method of the Startup class, 
-    include the routmap pages service, as shown below:
+ 2. Add the routemap pages service and middleware, complete template below:
 
-      using rmp;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Hosting;
+    using rmp;
+    using System.Threading.Tasks;
+    using System;
 
-      public void ConfigureServices( IServiceCollection services )
-      {
+    namespace mywebsite
+    {
 
-         // Add routemap pages service ...
+       public class Program
+       {
 
-         services.add_rmp();
+          private static Microsoft.AspNetCore.Builder.WebApplication web_app;
 
-      }
+          public static async Task Main( String[] args )
+          {
+
+             try
+             {
+
+                web_app = web_app_create( args );
+
+             }
+             catch ( Exception ex )
+             {
+
+                web_app = null;
+
+                Console.WriteLine( ex.ToString() );
+
+             }
+
+             if ( web_app is not null )
+             {
+
+                await web_app.RunAsync();
+
+             }
+
+          }
+
+          private static Microsoft.AspNetCore.Builder.WebApplication web_app_create( String[] args )
+          {
+
+             Microsoft.AspNetCore.Builder.WebApplicationOptions web_app_options;
+
+             Microsoft.AspNetCore.Builder.WebApplicationBuilder web_app_builder;
+
+             Microsoft.AspNetCore.Builder.WebApplication web_app;
 
 
- 5. In the Configure method of the Startup class, include the
-    following lines to use routmap pages, as shown below:
+             // Set web app options and create web app builder ...
 
-      public void Configure( IApplicationBuilder app )
-      {
+             web_app_options = new WebApplicationOptions()
+             {
 
-         // Use Routing (required) ...
+                Args = args,
 
-         app.UseRouting();
+             };
+
+             web_app_builder = WebApplication.CreateBuilder( web_app_options );
+
+             services_configure( web_app_builder );
+
+             web_app = web_app_builder.Build();
+
+             middleware_configure( web_app );
 
 
-         // Use routemap pages ...
+             return web_app;
 
-         app.use_rmp();
+          }
 
-      }
+          private static void middleware_configure( WebApplication app )
+          {
+
+             app.UseRouting();
+
+             app.use_rmp();
+
+          }
+
+          private static void services_configure( WebApplicationBuilder builder )
+          {
+
+             builder.Services.add_rmp();
+
+          }
+
+       }
+
+    }
 
 
-6. Build and launch the website.  The [routemap] patterns
+3. Build and launch the website.  The [routemap] patterns
    defined will be mapped to the appropriate handler, for 
    example:
 
@@ -126,10 +180,10 @@ using System;
  NOTES / REFERENCES
 
  - Routing in ASP.NET Core (specifically, Route template reference):
-   https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-8.0
 
  - EndpointRouteBuilderExtensions.MapMethods Method:
-   https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.endpointroutebuilderextensions.mapmethods?view=aspnetcore-5.0
+   https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.endpointroutebuilderextensions.mapmethods?view=aspnetcore-8.0
 
  - Use Attributes in C# (specifically, How to create your own attribute):
    https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/attributes
@@ -296,9 +350,9 @@ namespace rmp
       public routemap( String route_pattern,
                        http_methods allowed_http_methods = http_methods.GET | http_methods.POST,
                        Int32 order = 0,
-                       [CallerFilePath] string file_path = "",
-                       [CallerMemberName] string member_name = "",
-                       [CallerLineNumber] int line_number = 0 )
+                       [CallerFilePath] String file_path = "",
+                       [CallerMemberName] String member_name = "",
+                       [CallerLineNumber] Int32 line_number = 0 )
       {
 
          // A route pattern is required ...
@@ -338,7 +392,7 @@ namespace rmp
 
       --------------------------------------------------
       */
-      public virtual string route_pattern
+      public virtual String route_pattern
       {
 
          get
@@ -487,7 +541,7 @@ namespace rmp
 
       --------------------------------------------------
       */
-      public virtual int line_number
+      public virtual Int32 line_number
       {
 
          get
@@ -688,7 +742,7 @@ namespace rmp
          catch ( Exception ex )
          {
 
-            throw new Exception( $@"* Output file: {output_file_spec}, {ex}" );
+            throw new Exception( $@"* Error writing to output file: {output_file_spec}, {ex}" );
 
          }
 
@@ -1163,7 +1217,7 @@ namespace rmp
       public static IApplicationBuilder use_rmp( this IApplicationBuilder builder )
       {
 
-         return  builder is null  ? throw new ArgumentNullException( nameof( builder ) ) :  builder.UseEndpoints( map_endpoints );
+         return builder is null ? throw new ArgumentNullException( nameof( builder ) ) :  builder.UseEndpoints( map_endpoints );
 
       }
 

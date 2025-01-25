@@ -89,53 +89,40 @@ A lower value will have higher priority.
 ### Usage
 
 1. Create an empty .Net website project and include the file **rpm.cs** from this repository in your project (or simply
- clone this respository).
- 
-2. Include the following using statement in any file that uses the **[routemap]** attribute:
-
-    ```
-    using rmp;
-    ```
-    
-   For example, the class "my_pages" shown below contains two two methods "page1_render" and "page2_render", each
-   of which handles HTTP requests.
+   clone this respository). For example, the class "my_pages" shown below contains two two methods "page1_render" and  
+   "page2_render", each of which handles HTTP requests.
 
    ```
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Routing;
-    using System;
-    using System.Text;
-    using System.Threading.Tasks;
     using rmp;
 
     public class my_pages
     {
       
-       private int m_page1_render_count;
-       private int m_page2_render_count;
+       private Int32 m_page1_render_count;
+       private Int32 m_page2_render_count;
 
        public my_pages()
        {
 
-          int m_page1_render_count = 0;
+          m_page1_render_count = 0;
 
-          int m_page2_render_count = 0;
+          m_page2_render_count = 0;
 
        }
 
 
        [routemap( "/" ) ]
+       [routemap( "/page1")]
        private async Task page1_render( HttpContext http_context )
        {
 
           m_page1_render_count++;
 
-          await http_context.Response.WriteAsync( $@"Page 1, render count: {m_page1_render_count} );
+          await http_context.Response.WriteAsync( $@"Page 1, render count: {m_page1_render_count}" );
 
           return;
 
        }
-
 
        [routemap( "/page2" ) ]
        private async Task page2_render( HttpContext http_context )
@@ -143,7 +130,7 @@ A lower value will have higher priority.
 
           m_page2_render_count++;
 
-          await http_context.Response.WriteAsync( $@"Page 2, render count: {m_page2_render_count} );
+          await http_context.Response.WriteAsync( $@"Page 2, render count: {m_page2_render_count}" );
 
           return;
 
@@ -152,48 +139,109 @@ A lower value will have higher priority.
     }
    ```
 
-3. In the **Startup** class, modify the **ConfigureServices** and **Configure** methods to 
-   include the routemap pages service, as shown below:
+2. Add the routemap pages service and middleware as shown in the example below:
 
     ```
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using rmp;
+    using System.Threading.Tasks;
+    using System;
 
-    public class Startup
+    namespace mywebsite
     {
-   
-      public void ConfigureServices( IServiceCollection services )
-      {
 
-         // Add routemap pages service ...
+       public class Program
+       {
 
-         services.add_rmp();
+          private static Microsoft.AspNetCore.Builder.WebApplication web_app;
 
-      }
-    
-    
-      public void Configure( IApplicationBuilder app )
-      {
+          public static async Task Main( String[] args )
+          {
 
-         // Use Routing (required) ...
+             try
+             {
 
-         app.UseRouting();
+                web_app = web_app_create( args );
+
+             }
+             catch ( Exception ex )
+             {
+
+                web_app = null;
+
+                Console.WriteLine( ex.ToString() );
+
+             }
+
+             if ( web_app is not null )
+             {
+
+                await web_app.RunAsync();
+
+             }
+
+          }
+
+          private static Microsoft.AspNetCore.Builder.WebApplication web_app_create( String[] args )
+          {
+
+             Microsoft.AspNetCore.Builder.WebApplicationOptions web_app_options;
+
+             Microsoft.AspNetCore.Builder.WebApplicationBuilder web_app_builder;
+
+             Microsoft.AspNetCore.Builder.WebApplication web_app;
 
 
-         // Use routemap pages ...
+             // Set web app options and create web app builder ...
 
-         app.use_rmp();
+             web_app_options = new WebApplicationOptions()
+             {
 
-      }
-      
+                Args = args,
+
+             };
+
+ 
+             web_app_builder = WebApplication.CreateBuilder( web_app_options );
+
+             services_configure( web_app_builder );
+
+
+             web_app = web_app_builder.Build();
+
+             middleware_configure( web_app );
+
+
+             return web_app;
+
+          }
+
+          private static void middleware_configure( WebApplication app )
+          {
+
+             app.UseRouting();
+
+             app.use_rmp();
+
+          }
+
+          private static void services_configure( WebApplicationBuilder builder )
+          {
+
+             builder.Services.add_rmp();
+
+          }
+
+       }
+
     }
 
     ```
 
-4. Build and launch the website.  The [routemap] patterns defined will be mapped to the appropriate handler, for 
+3. Build and launch the website.  The [routemap] patterns defined will be mapped to the appropriate handler, for 
    example:
    - / => will invoke the my_pages.page1_render method</li>
+   - /page1 => will invoke the my_pages.page1 render method</li>_
    - /page2 => will invoke the my_pages.page2_render method</li>

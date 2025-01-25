@@ -24,7 +24,7 @@ namespace mywebsite
    public class app_pages
    {
 
-      private int m_product_page_render_count;
+      private Int32 m_product_page_render_count;
 
 
       /*
@@ -150,9 +150,11 @@ namespace mywebsite
 
          const String k_product_id = "id";
 
-         int product_id;
+         Int32 product_id;
 
          StringBuilder sb;
+
+         RouteData route_data;
 
 
          sb = new StringBuilder();
@@ -172,7 +174,7 @@ namespace mywebsite
 
          // Get product ID ...
 
-         var route_data = http_context.GetRouteData();
+         route_data = http_context.GetRouteData();
 
          if ( route_data is not null )
          {
