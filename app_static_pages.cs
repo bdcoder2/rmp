@@ -111,9 +111,12 @@ namespace mywebsite
          StringBuilder sb;
 
 
+         ArgumentNullException.ThrowIfNull( http_context );
+
          sb = new StringBuilder();
 
-         // Build response ...
+
+         // Build HTML response ...
 
          page_start( sb, "Static1 Page" );
 
@@ -152,8 +155,13 @@ namespace mywebsite
 
          StringBuilder sb;
 
+         
+         ArgumentNullException.ThrowIfNull( http_context );
 
          sb = new StringBuilder();
+
+         
+         // Build HTML response ...
 
          page_start( sb, "Static2 Page" );
 

@@ -107,10 +107,17 @@ namespace mywebsite
          StringBuilder sb;
 
 
+         ArgumentNullException.ThrowIfNull( http_context );
+
          sb = new StringBuilder();
 
 
-         // Build response ...
+         /*
+         Build HTML response ...
+         - The HTML could also be built by using a text templating
+           engine such as https://github.com/scriban/scriban or
+           https://github.com/sebastienros/fluid/
+         */
 
          page_start( sb, "Home", false );
 
@@ -156,6 +163,8 @@ namespace mywebsite
 
          RouteData route_data;
 
+
+         ArgumentNullException.ThrowIfNull( http_context );
 
          sb = new StringBuilder();
 
@@ -224,6 +233,8 @@ namespace mywebsite
 
          StringBuilder sb;
 
+
+         ArgumentNullException.ThrowIfNull( http_context );
 
          sb = new StringBuilder();
 
