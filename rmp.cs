@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System;
-using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
 
 /*
 ==================================================
@@ -1046,6 +1043,10 @@ namespace rmp
       that contains the routemap order and route pattern,
       which we use as a key into our routemap dictionary
       (m_routemap_dict).
+
+      Using the order combined with the route pattern
+      ensures unique keys as that same route pattern can
+      be used with a different order number.
 
       --------------------------------------------------
       */

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System;
+using System.Net;
 
 namespace mywebsite
 {
@@ -42,58 +43,6 @@ namespace mywebsite
 
          m_static2_render_count = 0;
 
-      
-      }
-
-
-      /*
-      --------------------------------------------------
-
-      Given a StringBuilder, add HTML code for the start
-      of a page ...
-
-      --------------------------------------------------
-      */
-      public static void page_start( StringBuilder sb, String title = "Title", Boolean link_to_home = true )
-      {
-
-         String s;
-
-         s = HttpUtility.HtmlEncode( title );
-
-         sb.AppendLine( $@"<html><head><title>{s}</title></head><body>" );
-
-         sb.AppendLine( @"<h1>" );
-
-         if ( link_to_home )
-         {
-
-            sb.AppendLine( @"<a href=""/"">Home</a> : " );
-
-         }
-
-         sb.Append( s );
-
-         sb.AppendLine( "</h1>" );
-
-      }
-
-
-      /*
-      --------------------------------------------------
-
-      Given a StringBuilder, add HTML code for the end
-      of a page ...
-
-      --------------------------------------------------
-      */
-      public static void page_end( StringBuilder sb )
-      {
-
-         sb.AppendLine( $@"<p>{System.DateTime.UtcNow:F}</p>" );
-
-         sb.AppendLine( @"</body></html>" );
-
       }
 
 
@@ -116,22 +65,26 @@ namespace mywebsite
          sb = new StringBuilder();
 
 
-         // Build HTML response ...
+         // Page start HTML ...
 
-         page_start( sb, "Static1 Page" );
+         app_util.html_page_start( sb, "Static1 Page" );
+
+
+         // Show how many times this page has been rendered ...
 
          m_static1_render_count++;
 
          sb.AppendLine( $@"<p>Render count: {m_static1_render_count}</p>" );
 
-         page_end( sb );
+
+         // Page end HTML ...
+
+         app_util.html_page_end( sb );
 
 
-         // Send response ...
+         // Send HTML response ...
 
-         http_context.Response.ContentType = "text/html";
-
-         await http_context.Response.WriteAsync( sb.ToString() );
+         await app_util.html_send_response( http_context, sb );
 
          return;
 
@@ -155,23 +108,29 @@ namespace mywebsite
 
          StringBuilder sb;
 
+         Microsoft.AspNetCore.Routing.RouteData route_data;
+
          
          ArgumentNullException.ThrowIfNull( http_context );
 
          sb = new StringBuilder();
 
          
-         // Build HTML response ...
+         // Page start HTML ...
 
-         page_start( sb, "Static2 Page" );
+         app_util.html_page_start( sb, "Static2 Page" );
+
+
+         // Show how many times this page has been rendered ...
 
          m_static2_render_count++;
 
          sb.AppendLine( $@"<p>Render count: {m_static2_render_count}</p>" );
 
+
          // Get ID ...
 
-         var route_data = http_context.GetRouteData();
+         route_data = http_context.GetRouteData();
 
          if ( route_data is not null )
          {
@@ -191,14 +150,15 @@ namespace mywebsite
 
          }
 
-         page_end( sb );
+
+         // Page end HTML ...
+
+         app_util.html_page_end( sb );
 
 
-         // Send response ...
+         // Send HTML response ...
 
-         http_context.Response.ContentType = "text/html";
-
-         await http_context.Response.WriteAsync( sb.ToString() );
+         await app_util.html_send_response( http_context, sb );
 
          return;
       

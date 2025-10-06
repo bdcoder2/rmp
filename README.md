@@ -1,13 +1,18 @@
-# Routemap pages (rmp) for .Net websites WITHOUT MVC or Razor
+# Routemap pages (rmp) for .NET websites WITHOUT MVC, Razor or Blazor
 
-Illustrates using routemap attributes for website endpoints WITHOUT the need of MVC or Razor.
+An experiment in which we build a website using routemap attributes
+for website API and/or page endpoints.  The goals being:
+
+1. No need to use MVC, Razor or Blazor UI frameworks.
+2. Reduce the overhead required for simple websites (since no framework must be loaded)
+3. Simplify and reduce the code required for simple websites.
+4. Easy to understand.
 
 ## The [routemap] attribute
 
-One or more **[routemap]** attributes are placed above any method in 
-a static or instance class that can process an HTTP request.  Each
-routemap pattern must be unique.  If a duplicate routemap pattern is
-detected an exception will be thrown.
+One or more **[routemap]** attributes are placed above any method in a static or instance class 
+that can process an HTTP request.  Each routemap pattern must be unique.  If a duplicate routemap 
+pattern is detected an exception will be thrown.
 
 ### Syntax
 
@@ -19,9 +24,9 @@ detected an exception will be thrown.
 
 #### route-pattern
 
-Required. The [route-pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-9.0) defines an endpoint. An endpoint 
-is something that can be selected, by matching the URL and HTTP method(s) provided.  A route-pattern may contain any number 
-of [route-constraints](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-9.0#route-constraints).
+Required. The [route-pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing) defines an endpoint. 
+An endpoint is something that can be selected, by matching the URL and HTTP method(s) provided.  A route-pattern may 
+contain any number of [route-constraints](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#route-constraints).
 
 #### http_methods
 Optional.  Used to indicate the allowed HTTP methods for the given route-pattern.  Valid HTTP method verbs are:
@@ -35,8 +40,8 @@ Optional.  Used to indicate the allowed HTTP methods for the given route-pattern
 - routemap.http_methods.TRACE
 - routemap.http_methods.PATCH
 
-If no methods are provided, then the HTTP GET and POST methods are used by default.  Multiple HTTP methods can be specified by using the logical OR operator (|) between
-method verbs, for example, to allow the GET or DELETE methods:
+If no methods are provided, then the HTTP GET and POST methods are used by default.  Multiple HTTP methods can be specified by using 
+the logical OR operator (|) between method verbs, for example, to allow the GET or DELETE methods:
 ```   
 routemap.http_methods.GET | routemap.http_methods.DELETE
 ```
@@ -77,7 +82,7 @@ A lower value will have higher priority.
    [routemap( "/widget/{*queryvalues}", routemap.http_methods.GET )]
 ```  
 
-- Matches the URL **/api/v1/test** for HTTP GET and POST requests.  The **api_test_v2** method will be excuted because the order has a lower value than the **api_test** method.
+- Matches the URL **/api/v1/test** for HTTP GET and POST requests.  The **api_test_v2** method will be executed because the order has a lower value than the **api_test** method.
 ```
    [routemap( "/api/v1/test", order: 1 )]
    public static async Task api_test_v2( HttpContext context ) { ... }
