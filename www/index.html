@@ -1,0 +1,29 @@
+﻿<html>
+<head>
+   <title>Home Page</title>
+</head>
+<body>
+   <h1>
+      Home
+   </h1>
+   This is a &quot;static&quot; HTML page.  The links below are to dynamically created pages:
+   <ul>
+      <li><a href="/api/double/100">/api/double/100</a></li>
+      <li><a href="/api/double/2147483647">/api/double/2147483647</a></li>
+      <li><a href="/product/22">/product/22</a></li>
+      <li><a href="/querystrings?a=1&b=2&b=3&c=4&c=5&c=6&d=dot.net&e">/querystrings?a=1&b=2&b=3&c=4&c=5&c=6&d=dot.net&e</a></li>
+      <li><a href="/routemaps/">/routemaps</a></li>
+      <li><a href="/settings/">/settings/</a></li>
+      <li><a href="/static1/">/static1/</a></li>
+      <li><a href="/static2/44">/static2/44</a></li>
+   </ul>
+   <p>
+      Use the form below to get the value for any <a href="/settings/">application settings</a> key.
+   </p>
+   <form action="/app_setting_key_form_handler" method="POST">
+      <label for="settings_key">Settings Key:</label>
+      <input type="text" value="ASPNETCORE_ENVIRONMENT" size="40" id="settings_key" name="settings_key" placeholder="Settings Key"> (required)
+      <p><input type="submit" value="Submit"></p>
+   </form>
+</body>
+</html>

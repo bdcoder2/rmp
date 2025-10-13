@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
-using rmp;
 
-namespace mywebsite
+namespace rmp
 {
-
    /*
    ==================================================
 
@@ -32,6 +33,8 @@ namespace mywebsite
    public class app_pages
    {
 
+      private Int32 m_user_id_form_handler_count;
+
       private Int32 m_product_page_render_count;
 
 
@@ -45,6 +48,8 @@ namespace mywebsite
       public app_pages()
       {
 
+         m_user_id_form_handler_count = 0;
+
          m_product_page_render_count = 0;
 
       }
@@ -57,12 +62,12 @@ namespace mywebsite
 
       --------------------------------------------------
       */
-      [routemap( "/user_id_form_handler", routemap.http_methods.POST )]
-      public async Task user_id_form_handler( HttpContext http_context )
+      [routemap( "/app_setting_key_form_handler", routemap.http_methods.POST )]
+      public async Task app_setting_key_form_handler( HttpContext http_context )
       {
 
+         String key;
          String s;
-         String user_id;
 
          StringBuilder sb;
 
@@ -73,41 +78,55 @@ namespace mywebsite
 
          sb = new StringBuilder();
 
-         
+         m_user_id_form_handler_count++;
+
+
          // Page start HTML ...
 
-         app_util.html_page_start( sb, "User ID Form Handler" );
+         app_util.html_page_start( sb, "Setting Key Form Handler" );
 
+         sb.AppendLine( $@"<p>Form handler count: {m_user_id_form_handler_count}</p>" );
 
          // Get the form data / collection ...
 
-         form_data = await app_util.form_data_get( http_context );
+         form_data = await http_util.form_data_get( http_context );
 
          if ( form_data is not null )
          {
 
-            // Get the user ID field from the form ...
+            key = http_util.form_field_string( form_data, "settings_key" );
 
-            user_id = app_util.form_field_string( form_data, "userid" );
-
-            if ( String.IsNullOrWhiteSpace( user_id ) )
+            if ( String.IsNullOrWhiteSpace( key ) )
             {
 
-               sb.Append( "<p><b>A User ID is required</b></p>" );
+               sb.Append( "<p><b>A Setting Key is required</b></p>" );
 
-               // Show User ID form again ...
+               // Show form again ...
 
-               app_util.html_user_id_form( sb );
+               app_util.html_app_settings_key_form( sb, key );
 
             }
             else
             {
 
-               // Show the user ID entered ...
+               // Show the key entered ...
 
-               s = HttpUtility.HtmlEncode( user_id );
+               sb.AppendLine( @"<p>Key: " + HttpUtility.HtmlEncode( key ) + "</p>" );
 
-               sb.AppendLine( $@"<p>User ID entered: {s}</p>" );
+               if ( app_settings.config_key_exists( key ) )
+               {
+
+                  s = app_settings.config_value( key );
+
+                  sb.AppendLine( @"<p>Value: " + HttpUtility.HtmlEncode( s ) + "</p>" );
+
+               }
+               else
+               {
+
+                  sb.AppendLine( @"<p>The key <b>DOES NOT exist</b> in settings</p>" );
+
+               }
 
             }
 
@@ -121,64 +140,7 @@ namespace mywebsite
 
          // Send HTML response ...
 
-         await app_util.html_send_response( http_context, sb );
-
-         return;
-
-      }
-
-
-      /*
-      --------------------------------------------------
-
-      Render the home page ...
-
-      --------------------------------------------------
-      */
-      [routemap( "/" )]
-      public async Task home_page( HttpContext http_context )
-      {
-
-         StringBuilder sb;
-
-
-         ArgumentNullException.ThrowIfNull( http_context );
-
-         sb = new StringBuilder();
-
-
-         // Page start HTML ...
-
-         app_util.html_page_start( sb, "Home", false );
-
-
-         // Add links to the page ...
-
-         sb.AppendLine(
-@"<ul>
-<li><a href=""/api/double/100"">/api/double/100<a/></li>
-<li><a href=""/product/22"">/product/22</a></li>
-<li><a href=""/querystrings?a=1&b=2&b=3&c=4&c=5&c=6&d=dot.net"">/querystrings?a=1&b=2&b=3&c=4&c=5&c=6&d=dot.net</a></li>
-<li><a href=""/routemaps/"">/routemaps</a></li>
-<li><a href=""/static1/"">/static1/</a></li>
-<li><a href=""/static2/44"">/static2/44</a></li>
-</ul>"
-         );
-
-
-         // Add a User ID form ...
-
-         app_util.html_user_id_form( sb, "Test" );
-
-
-         // Page end HTML ...
-
-         app_util.html_page_end( sb );
-
-
-         // Send HTML response ...
-
-         await app_util.html_send_response( http_context, sb );
+         await http_util.html_response_send( http_context, sb );
 
          return;
 
@@ -234,7 +196,7 @@ namespace mywebsite
             if ( route_data.Values.ContainsKey( k_product_id ) )
             {
 
-               product_id = Int32.Parse( ( String )route_data.Values[ k_product_id ] );
+               product_id = int.Parse( ( String )route_data.Values[ k_product_id ] );
 
                // Build response ...
 
@@ -252,17 +214,18 @@ namespace mywebsite
 
          // Send HTML response ...
 
-         await app_util.html_send_response( http_context, sb );
+         await http_util.html_response_send( http_context, sb );
 
          return;
       
       }
 
+
       /*
       --------------------------------------------------
 
-      Render a page that shows the current endpoint 
-      information and all defined routemaps ...
+      Render a page that shows the query strings passed
+      to a page ...
 
       --------------------------------------------------
       */
@@ -289,14 +252,14 @@ namespace mywebsite
          app_util.html_page_start( sb, "Querystrings Page" );
 
 
-         sb.AppendLine( "<p>Querystring Data:</p>" );
+         sb.AppendLine( "<p>QueryString Data:</p>" );
 
          querystring_data = http_context.Request.Query;
 
          if ( querystring_data.Count == 0 )
          {
 
-            sb.AppendLine( "<b>No querystring data was present in this request</b>" );
+            sb.AppendLine( "<b>No queryString data was present in this request</b>" );
 
          }
          else
@@ -309,7 +272,7 @@ namespace mywebsite
 
                querystring_values = querystring_param.Value;
 
-               sb.Append( "<p>Key: " + HttpUtility.HtmlEncode( querystring_key ) );
+               sb.Append( "<p>Key: " + HttpUtility.HtmlEncode( querystring_key ) + ", Value count: " + querystring_values.Count.ToString() );
 
                if ( querystring_values.Count > 0 )
                {
@@ -318,7 +281,20 @@ namespace mywebsite
 
                   foreach ( String qs_val in querystring_values )
                   {
-                     sb.AppendLine( "<li>" + HttpUtility.HtmlEncode( qs_val ) + "</li>" );
+
+                     sb.Append( "<li>" );
+
+                     if ( String.IsNullOrEmpty( qs_val ) )
+                     {
+                        sb.AppendLine( "NullOrEmpty value" );
+                     }
+                     else
+                     {
+                        sb.AppendLine( HttpUtility.HtmlEncode( qs_val ) );
+                     }
+
+                     sb.Append( "</li>" );
+
                   }
 
                   sb.AppendLine( "</ul>" );
@@ -337,31 +313,9 @@ namespace mywebsite
          app_util.html_page_end( sb );
 
 
-         // DEBUGGING - Log all routemaps to a text file
-         // Uncomment and change path below as needed ...
-         /*
-         String routemap_file = @"D:\temp\routmap_pages.txt";
-
-         try
-         {
-
-            routemap_endpoints.log_to_file( routemap_file );
-
-            sb.AppendLine( $@"<b>Routemaps written to file</b>: {routemap_file}</p>" );
-
-         }
-         catch ( Exception ex )
-         {
-
-            sb.AppendLine( $@"<p>{ex}</p>" );
-
-         }
-         */
-
-
          // Send HTML response ...
 
-         await app_util.html_send_response( http_context, sb );
+         await http_util.html_response_send( http_context, sb );
 
          return;
 
@@ -372,7 +326,7 @@ namespace mywebsite
       --------------------------------------------------
 
       Render a page that shows the current endpoint 
-      information and all defined routemaps ...
+      information and all defined [routemap] pages ...
 
       --------------------------------------------------
       */
@@ -405,7 +359,7 @@ namespace mywebsite
 
          if ( endpoint is not null )
          {
- 
+
             sb.AppendLine( $@"<b>This routemap endpoint properties:</b>
                            <ul>
                            <li>DisplayName: {endpoint.DisplayName}</li>
@@ -431,7 +385,7 @@ namespace mywebsite
 
             sb.AppendLine( $@"<b>Number of [routemap] endpoints defined: {rm_endpoints.routemaps.Count}</b><ol>" );
 
-            foreach ( KeyValuePair<String, routemap_data> kvp in rm_endpoints.routemaps )
+            foreach ( KeyValuePair<string, routemap_data> kvp in rm_endpoints.routemaps )
             {
 
                s = String.Join( ", ", kvp.Value.routemap_attribute.allowed_http_method_list );
@@ -482,7 +436,53 @@ namespace mywebsite
 
          // Send HTML response ...
 
-         await app_util.html_send_response( http_context, sb );
+         await http_util.html_response_send( http_context, sb );
+
+         return;
+
+      }
+
+
+
+      /*
+      --------------------------------------------------
+
+      Render a page that shows the current application
+      settings ...
+
+      --------------------------------------------------
+      */
+      [routemap( "/settings" )]
+      public async Task settings_page( HttpContext http_context )
+      {
+
+         StringBuilder sb;
+
+         ArgumentNullException.ThrowIfNull( http_context );
+
+         sb = new StringBuilder();
+
+
+         // Page start HTML ...
+
+         app_util.html_page_start( sb, "Settings" );
+
+
+         sb.AppendLine( "<pre>" );
+
+         sb.Append( app_settings.to_string() );
+
+         sb.AppendLine( "</pre>" );
+
+
+         // Page end HTML ...
+
+         app_util.html_page_end( sb );
+
+
+         // Send HTML response ...
+
+         await http_util.html_response_send( http_context, sb );
 
          return;
 

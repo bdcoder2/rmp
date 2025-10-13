@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using rmp;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System;
 using System.Net;
 
-namespace mywebsite
+namespace rmp
 {
-
    /*
    ==================================================
 
@@ -24,9 +22,9 @@ namespace mywebsite
    public static class app_static_pages
    {
 
-      private static int m_static1_render_count;
+      private static Int32 m_static1_render_count;
 
-      private static int m_static2_render_count;
+      private static Int32 m_static2_render_count;
 
 
       /*
@@ -84,7 +82,7 @@ namespace mywebsite
 
          // Send HTML response ...
 
-         await app_util.html_send_response( http_context, sb );
+         await http_util.html_response_send( http_context, sb );
 
          return;
 
@@ -104,11 +102,11 @@ namespace mywebsite
 
          const String k_id = "id";
 
-         int id;
+         Int32 id;
 
          StringBuilder sb;
 
-         Microsoft.AspNetCore.Routing.RouteData route_data;
+         RouteData route_data;
 
          
          ArgumentNullException.ThrowIfNull( http_context );
@@ -140,7 +138,7 @@ namespace mywebsite
             if ( route_data.Values.ContainsKey( k_id ) )
             {
 
-               id = Int32.Parse( (String)route_data.Values[ k_id ] );
+               id = int.Parse( ( String )route_data.Values[ k_id ] );
 
                // Build response ...
 
@@ -158,7 +156,7 @@ namespace mywebsite
 
          // Send HTML response ...
 
-         await app_util.html_send_response( http_context, sb );
+         await http_util.html_response_send( http_context, sb );
 
          return;
       

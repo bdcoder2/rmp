@@ -4,12 +4,28 @@
       <TargetFramework>net9.0</TargetFramework>
    </PropertyGroup>
 
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+   <!--
+   Disable warning about type names in our code that consist
+   of solely lower-cased ASCII characters ...
+   -->
+   <PropertyGroup>
       <NoWarn>CS8981</NoWarn>
    </PropertyGroup>
 
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-      <NoWarn>CS8981</NoWarn>
-   </PropertyGroup>
-
+   <!--
+   Required so that all static content gets copied to the
+   output directory ...
+   -->
+   <ItemGroup>
+      <None Update="www\**\*">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+   </ItemGroup>
+   <ItemGroup>
+     <EditorConfigFiles Remove="D:\vsprojects\rmp\.editorconfig" />
+   </ItemGroup>
+   <ItemGroup>
+     <None Include="D:\vsprojects\rmp\.editorconfig" />
+   </ItemGroup>
+   
 </Project>

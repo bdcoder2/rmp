@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System;
+using System.Linq;
 
 /*
 ==================================================
@@ -196,7 +197,6 @@ using System;
 
 namespace rmp
 {
-
    /*
    ==================================================
  
@@ -223,8 +223,8 @@ namespace rmp
 
       // Public HTTP methods / verbs enumeration ...
 
-      [System.Flags]
-      public enum http_methods : Int32
+      [Flags]
+      public enum http_methods : int
       {
 
          GET = 1,
@@ -354,7 +354,7 @@ namespace rmp
 
          // A route pattern is required ...
 
-         ArgumentNullException.ThrowIfNullOrWhiteSpace( route_pattern );
+         ArgumentException.ThrowIfNullOrWhiteSpace( route_pattern );
 
          m_route_pattern = route_pattern;
 
@@ -431,7 +431,7 @@ namespace rmp
 
       --------------------------------------------------
       */
-      public virtual System.Collections.Generic.List<String> allowed_http_method_list
+      public virtual System.Collections.Generic.List<string> allowed_http_method_list
       {
 
          get
@@ -439,9 +439,9 @@ namespace rmp
 
             String http_verb;
 
-            System.Collections.Generic.List<String> method_list;
+            System.Collections.Generic.List<string> method_list;
 
-            method_list = new System.Collections.Generic.List<String>();
+            method_list = new System.Collections.Generic.List<string>();
 
 
             // Loop through http_methods enum to see which flags are set ...
@@ -561,45 +561,29 @@ namespace rmp
 
    ==================================================
    */
-   public class routemap_data
+   public class routemap_data( String method_name, routemap routemap_attribute )
    {
 
       // The name of the method invoked for a routemap ...
 
-      private readonly String m_method_name;
+      private readonly String m_method_name = method_name;
 
       // The routemap attribute object ...
 
-      private readonly routemap m_routemap_attribute;
+      private readonly routemap m_routemap_attribute = routemap_attribute;
 
 
       /*
       --------------------------------------------------
 
-      Constructor
-
-      --------------------------------------------------
-      */
-      public routemap_data( String method_name, routemap routemap_attribute )
-      {
-
-         m_method_name = method_name;
-
-         m_routemap_attribute = routemap_attribute;
-
-      }
-
-
-      /*
-      --------------------------------------------------
-
-      Returns a string containing the method name that 
+      Returns a String containing the method name that 
       is invoked to handle a routemap pattern / path ...
 
       --------------------------------------------------
       */
       public String method_name
       {
+
          get 
          {
 
@@ -649,7 +633,7 @@ namespace rmp
       created; key is the route pattern ...
       */
 
-      private readonly System.Collections.Generic.Dictionary<String, routemap_data> m_routemap_dict;
+      private readonly System.Collections.Generic.Dictionary<string, routemap_data> m_routemap_dict;
 
 
       /*
@@ -662,7 +646,7 @@ namespace rmp
       public routemap_endpoints()
       {
 
-         m_routemap_dict = new System.Collections.Generic.Dictionary<String, routemap_data>();
+         m_routemap_dict = new System.Collections.Generic.Dictionary<string, routemap_data>();
 
       }
 
@@ -754,7 +738,7 @@ namespace rmp
 
       --------------------------------------------------
       */
-      public System.Collections.Generic.Dictionary<String, routemap_data> routemaps
+      public System.Collections.Generic.Dictionary<string, routemap_data> routemaps
       {
 
          get
@@ -770,7 +754,7 @@ namespace rmp
       /*
       --------------------------------------------------
 
-      Given a MethodInfo object, return a string that 
+      Given a MethodInfo object, return a String that 
       contains the declaring type and method name, that
       is, the fully qualified method name ...
 
@@ -811,9 +795,9 @@ namespace rmp
 
          ParameterInfo[] parameter_info_array;
 
-         System.Reflection.MethodInfo[] method_info_array;
+         MethodInfo[] method_info_array;
 
-         System.Type[] assembly_types_array;
+         Type[] assembly_types_array;
 
          System.Collections.Generic.List<MethodInfo> method_info_list;
 
@@ -842,7 +826,7 @@ namespace rmp
                foreach ( MethodInfo method_info in method_info_array )
                {
 
-                  if ( System.Attribute.GetCustomAttributes( method_info, typeof( routemap ) ).Length > 0 )
+                  if ( Attribute.GetCustomAttributes( method_info, typeof( routemap ) ).Length > 0 )
                   {
 
                      // Get qualified method name for error reporting ...
@@ -888,14 +872,14 @@ namespace rmp
 
       --------------------------------------------------
       */
-      private static System.Collections.Generic.Dictionary<String, Microsoft.AspNetCore.Http.RequestDelegate> route_handlers_create( System.Collections.Generic.List<MethodInfo> method_info_list )
+      private static System.Collections.Generic.Dictionary<string, Microsoft.AspNetCore.Http.RequestDelegate> route_handlers_create( System.Collections.Generic.List<MethodInfo> method_info_list )
       {
 
          object class_object;
 
          String method_name;
 
-         System.Collections.Generic.Dictionary<String, Microsoft.AspNetCore.Http.RequestDelegate> method_name_dict;
+         System.Collections.Generic.Dictionary<string, Microsoft.AspNetCore.Http.RequestDelegate> method_name_dict;
 
          /*
          The instance list is used to keep track of instances created when creating
@@ -920,7 +904,7 @@ namespace rmp
 
          instance_list = new System.Collections.Generic.List<object>();
 
-         method_name_dict = new System.Collections.Generic.Dictionary<String, Microsoft.AspNetCore.Http.RequestDelegate>();
+         method_name_dict = new System.Collections.Generic.Dictionary<string, Microsoft.AspNetCore.Http.RequestDelegate>();
 
 
          // Loop to create a route handler for each method in the list ...
@@ -1003,7 +987,7 @@ namespace rmp
 
                      // Create an instance of the class; this will trigger the class constructor ...
 
-                     class_object = System.Activator.CreateInstance( method_info.DeclaringType );
+                     class_object = Activator.CreateInstance( method_info.DeclaringType );
 
                      // Add the class instance in our list ...
 
@@ -1067,17 +1051,17 @@ namespace rmp
 
       --------------------------------------------------
       */
-      public void add( Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints )
+      public void add( IEndpointRouteBuilder endpoints )
       {
 
          String key;
          String method_name;
 
-         System.Attribute[] attribute_array;
+         Attribute[] attribute_array;
 
          System.Collections.Generic.List<MethodInfo> method_info_list;
 
-         System.Collections.Generic.Dictionary<String, Microsoft.AspNetCore.Http.RequestDelegate> method_name_dict;
+         System.Collections.Generic.Dictionary<string, Microsoft.AspNetCore.Http.RequestDelegate> method_name_dict;
 
          Microsoft.AspNetCore.Http.RequestDelegate route_handler;
 
@@ -1121,9 +1105,9 @@ namespace rmp
 
             // Get all the [routemap] attributes associated with this method ...
 
-            attribute_array = System.Attribute.GetCustomAttributes( method_info, typeof( routemap ), true );
+            attribute_array = Attribute.GetCustomAttributes( method_info, typeof( routemap ), true );
 
-            foreach ( routemap attribute in attribute_array )
+            foreach ( routemap attribute in attribute_array.Cast<routemap>() )
             {
 
                // Internal consistency check for duplicate route patterns ...
@@ -1171,9 +1155,12 @@ namespace rmp
 
    }
 
+
    /*
-   Extension method used to add [routemap] endpoints - that is, 
-   those methods that have one or more [routemap] atributes.
+   ==================================================
+   Extension methods used to add [routemap] endpoints,
+   that is, those methods that have one or more 
+   [routemap] atributes.
 
    USAGE:
 
@@ -1183,15 +1170,15 @@ namespace rmp
    public void Configure( IApplicationBuilder app )
    {
 
-      
       app.UseRouting();
 
-      // other ...
+      // follwed by ...
 
       app.use_rmp();
 
    }
 
+   ==================================================
    */
    public static class routemap_extensions
    {
@@ -1204,39 +1191,42 @@ namespace rmp
 
       }
 
+
       // .Net 6.0+ ...
-      public static void use_rmp( this WebApplication app )
+      public static void use_rmp( this Microsoft.AspNetCore.Builder.WebApplication app )
       {
 
          ArgumentNullException.ThrowIfNull( app );
 
-         map_endpoints( app );
+         app .map_endpoints( );
 
       }
 
+
       // .Net 5 or 6 ...
-      public static IApplicationBuilder use_rmp( this IApplicationBuilder builder )
+      public static IApplicationBuilder use_rmp( this Microsoft.AspNetCore.Builder.IApplicationBuilder builder )
       {
 
          return builder is null ? throw new ArgumentNullException( nameof( builder ) ) :  builder.UseEndpoints( map_endpoints );
 
       }
 
-      private static void map_endpoints( this IEndpointRouteBuilder endpoints )
+
+      // Map all [routemap] endpoints ...
+      private static void map_endpoints( this Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints )
       {
 
          ArgumentNullException.ThrowIfNull( endpoints );
+
 
          // Get routemap_endpoints instance ...
 
          routemap_endpoints routemap_endpoints = endpoints.ServiceProvider.GetService<routemap_endpoints>();
 
          if ( routemap_endpoints is null )
-         {
 
             throw new Exception( "Did you forget to call Services.add_rmp()?" );
 
-         }
 
          // Add all [routemap] endpoints ...
 
@@ -1244,7 +1234,7 @@ namespace rmp
 
 
          // DEBUGGING - log all routemap endpoints to a file ...
-         //routemap_endpoints.log_to_file( @"D:\temp\website_endpoints.txt" );
+         //routemap_endpoints.log_to_file( @"D:\temp\rmp_endpoints.txt" );
 
       }
 
