@@ -1198,7 +1198,7 @@ namespace rmp
 
          ArgumentNullException.ThrowIfNull( app );
 
-         app .map_endpoints( );
+         app.map_endpoints( );
 
       }
 
@@ -1207,7 +1207,7 @@ namespace rmp
       public static IApplicationBuilder use_rmp( this Microsoft.AspNetCore.Builder.IApplicationBuilder builder )
       {
 
-         return builder is null ? throw new ArgumentNullException( nameof( builder ) ) :  builder.UseEndpoints( map_endpoints );
+         return builder is null ? throw new ArgumentNullException( nameof( builder ) ) : builder.UseEndpoints( map_endpoints );
 
       }
 
