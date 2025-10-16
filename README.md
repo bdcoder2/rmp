@@ -106,10 +106,9 @@ A lower value will have higher priority.
        private Int32 m_page1_render_count;
        private Int32 m_page2_render_count;
 
- 
        // A default constructor is required when using [routemap] attributes
        // in a non-static class ...
-
+   
        public my_pages()
        {
 
