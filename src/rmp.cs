@@ -834,7 +834,7 @@ namespace rmp
                      method_name = qualified_method_name( method_info );
 
                      // If the method has a single parameter of type HttpContext, save in our list ...
-
+                     
                      parameter_info_array = method_info.GetParameters();
 
                      if ( parameter_info_array.Length == 1 && parameter_info_array[ 0 ].ParameterType == typeof( Microsoft.AspNetCore.Http.HttpContext ) )
@@ -849,7 +849,7 @@ namespace rmp
                         throw new InvalidOperationException( $@"Method: {method_name}, must have a single parameter of type: Microsoft.AspNetCore.Http.HttpContext" );
 
                      }
-
+                     
                   }
 
                }
