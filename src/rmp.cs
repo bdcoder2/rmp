@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System;
-using System.Linq;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
 /*
 ==================================================
@@ -839,9 +840,9 @@ namespace rmp
 
                      if ( parameter_info_array.Length == 1 && parameter_info_array[ 0 ].ParameterType == typeof( Microsoft.AspNetCore.Http.HttpContext ) )
                      {
-
+                     
                         method_info_list.Add( method_info );
-
+                     
                      }
                      else
                      {
